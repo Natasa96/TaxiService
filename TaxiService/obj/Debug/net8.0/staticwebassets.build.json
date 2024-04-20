@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "QRzDvjh1ucpo2AwAhIqocM4tAPrZEZp2S8f4OIKbOlE=",
+  "Source": "TaxiService",
+  "BasePath": "_content/TaxiService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

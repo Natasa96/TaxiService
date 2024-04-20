@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  # taxiservice:
+  #   build:
+  #     context: ./TaxiService
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5000:5000" # Map container port 5000 to host port 5000
+  #   volumes:
+  #     - ./TaxiService:/app
+  #     - ./DataLib:/app/DataLib
+  #   depends_on:
+  #     - mysql
+
+  # authservice:
+  #   build:
+  #     context: ./AuthService
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5001:5001" # Map container port 5001 to host port 5001
+  #   volumes:
+  #     - ./AuthService:/app
+  #   depends_on:
+  #     - mysql
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: "taxiservicedb"
+      MYSQL_USER: "admin"
+      MYSQL_PASSWORD: "admin"
+      MYSQL_ROOT_PASSWORD: "root"
+    ports:
+      - "3306:3306" # Map container port 3306 to host port 3306
+
