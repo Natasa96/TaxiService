@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\DataLib\\DataLib.csproj": {}
+    "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\DataLib\\DataLib.csproj": {
+    "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\DataLib\\DataLib.csproj",
+        "projectUniqueName": "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj",
         "projectName": "DataLib",
-        "projectPath": "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\DataLib\\DataLib.csproj",
-        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\DataLib\\obj\\",
+        "projectPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj",
+        "packagesPath": "/Users/nenadradulovic/.nuget/packages/",
+        "outputPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/nenadradulovic/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,11 +32,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -53,9 +48,13 @@
               "target": "Package",
               "version": "[8.0.4, )"
             },
-            "Microsoft.EntityFrameworkCore.SqlServer": {
+            "MySql.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.4, )"
+              "version": "[8.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.2, )"
             }
           },
           "imports": [
@@ -74,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/8.0.3/libexec/sdk/8.0.103/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1053,23 +1053,6 @@
           }
         }
       },
-      "MySql.Data.EntityFrameworkCore/8.0.22": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "3.1.1",
-          "MySql.Data": "8.0.22"
-        },
-        "compile": {
-          "lib/netstandard2.1/MySql.Data.EntityFrameworkCore.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.1/MySql.Data.EntityFrameworkCore.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "MySql.EntityFrameworkCore/8.0.0": {
         "type": "package",
         "dependencies": {
@@ -1084,6 +1067,39 @@
         },
         "runtime": {
           "lib/net8.0/MySql.EntityFrameworkCore.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "MySqlConnector/2.3.5": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.1"
+        },
+        "compile": {
+          "lib/net8.0/MySqlConnector.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/MySqlConnector.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Pomelo.EntityFrameworkCore.MySql/8.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Relational": "[8.0.2, 8.0.999]",
+          "MySqlConnector": "2.3.5"
+        },
+        "compile": {
+          "lib/net8.0/Pomelo.EntityFrameworkCore.MySql.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Pomelo.EntityFrameworkCore.MySql.dll": {
             "related": ".xml"
           }
         }
@@ -1856,7 +1872,8 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "8.0.4",
-          "Microsoft.EntityFrameworkCore.SqlServer": "8.0.4"
+          "MySql.EntityFrameworkCore": "8.0.0",
+          "Pomelo.EntityFrameworkCore.MySql": "8.0.2"
         },
         "compile": {
           "bin/placeholder/DataLib.dll": {}
@@ -3684,21 +3701,6 @@
         "runtimes/win-x64/native/krbcc64.dll"
       ]
     },
-    "MySql.Data.EntityFrameworkCore/8.0.22": {
-      "sha512": "o/+OMqQ0fw4f6COfRrbwqP0CKcqoFkCfb1Rl3mfgUcae3XqAkiA6t8rsjA1wnkxUvwfNYX+YM2w2Xa6u4QEUkA==",
-      "type": "package",
-      "path": "mysql.data.entityframeworkcore/8.0.22",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/netstandard2.0/MySql.Data.EntityFrameworkCore.dll",
-        "lib/netstandard2.0/MySql.Data.EntityFrameworkCore.xml",
-        "lib/netstandard2.1/MySql.Data.EntityFrameworkCore.dll",
-        "lib/netstandard2.1/MySql.Data.EntityFrameworkCore.xml",
-        "mysql.data.entityframeworkcore.8.0.22.nupkg.sha512",
-        "mysql.data.entityframeworkcore.nuspec"
-      ]
-    },
     "MySql.EntityFrameworkCore/8.0.0": {
       "sha512": "u2Djzvj2YJdJ4T8+BXbPwFTXDK3XzW36Z9sM+c2BHMNYBPq1mQHc8ycr77jLR+1qyBB/G6rpChquT1qot3m0hw==",
       "type": "package",
@@ -3716,6 +3718,50 @@
         "logo-mysql-170x115.png",
         "mysql.entityframeworkcore.8.0.0.nupkg.sha512",
         "mysql.entityframeworkcore.nuspec"
+      ]
+    },
+    "MySqlConnector/2.3.5": {
+      "sha512": "AmEfUPkFl+Ev6jJ8Dhns3CYHBfD12RHzGYWuLt6DfG6/af6YvOMyPz74ZPPjBYQGRJkumD2Z48Kqm8s5DJuhLA==",
+      "type": "package",
+      "path": "mysqlconnector/2.3.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net462/MySqlConnector.dll",
+        "lib/net462/MySqlConnector.xml",
+        "lib/net471/MySqlConnector.dll",
+        "lib/net471/MySqlConnector.xml",
+        "lib/net48/MySqlConnector.dll",
+        "lib/net48/MySqlConnector.xml",
+        "lib/net6.0/MySqlConnector.dll",
+        "lib/net6.0/MySqlConnector.xml",
+        "lib/net7.0/MySqlConnector.dll",
+        "lib/net7.0/MySqlConnector.xml",
+        "lib/net8.0/MySqlConnector.dll",
+        "lib/net8.0/MySqlConnector.xml",
+        "lib/netstandard2.0/MySqlConnector.dll",
+        "lib/netstandard2.0/MySqlConnector.xml",
+        "lib/netstandard2.1/MySqlConnector.dll",
+        "lib/netstandard2.1/MySqlConnector.xml",
+        "logo.png",
+        "mysqlconnector.2.3.5.nupkg.sha512",
+        "mysqlconnector.nuspec"
+      ]
+    },
+    "Pomelo.EntityFrameworkCore.MySql/8.0.2": {
+      "sha512": "XjnlcxVBLnEMbyEc5cZzgZeDyLvAniACZQ04W1slWN0f4rmfNzl98gEMvHnFH0fMDF06z9MmgGi/Sr7hJ+BVnw==",
+      "type": "package",
+      "path": "pomelo.entityframeworkcore.mysql/8.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "icon.png",
+        "lib/net8.0/Pomelo.EntityFrameworkCore.MySql.dll",
+        "lib/net8.0/Pomelo.EntityFrameworkCore.MySql.xml",
+        "pomelo.entityframeworkcore.mysql.8.0.2.nupkg.sha512",
+        "pomelo.entityframeworkcore.mysql.nuspec"
       ]
     },
     "Swashbuckle.AspNetCore/6.4.0": {
@@ -5356,25 +5402,24 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.4",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.4",
       "MySql.Data >= 8.3.0",
-      "MySql.Data.EntityFrameworkCore >= 8.0.22",
       "MySql.EntityFrameworkCore >= 8.0.0",
       "Swashbuckle.AspNetCore >= 6.4.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Administrator\\.nuget\\packages\\": {}
+    "/Users/nenadradulovic/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\TaxiService\\TaxiService.csproj",
+      "projectUniqueName": "/Users/nenadradulovic/Desktop/nata/TaxiService/TaxiService/TaxiService.csproj",
       "projectName": "TaxiService",
-      "projectPath": "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\TaxiService\\TaxiService.csproj",
-      "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\TaxiService\\obj\\",
+      "projectPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/TaxiService/TaxiService.csproj",
+      "packagesPath": "/Users/nenadradulovic/.nuget/packages/",
+      "outputPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/TaxiService/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/nenadradulovic/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -5386,8 +5431,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\DataLib\\DataLib.csproj": {
-              "projectPath": "c:\\Users\\Administrator\\Desktop\\fax\\TaxiServiceProject\\DataLib\\DataLib.csproj"
+            "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj": {
+              "projectPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj"
             }
           }
         }
@@ -5396,11 +5441,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -5431,10 +5471,6 @@
             "target": "Package",
             "version": "[8.3.0, )"
           },
-          "MySql.Data.EntityFrameworkCore": {
-            "target": "Package",
-            "version": "[8.0.22, )"
-          },
           "MySql.EntityFrameworkCore": {
             "target": "Package",
             "version": "[8.0.0, )"
@@ -5463,7 +5499,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/8.0.3/libexec/sdk/8.0.103/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

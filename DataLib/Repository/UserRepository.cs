@@ -1,12 +1,11 @@
 using DataLib.Model;
+using Microsoft.EntityFrameworkCore;
 
-public class UserRepository
+public class UserRepository : AbstractRepository<User>
 {
-    public readonly IRepository<User> service;
-
-    public UserRepository(IRepository<User> userRepository)
+    public UserRepository(TaxiDbContext context) : base(context)
     {
-        service = userRepository;
+
     }
 
 }

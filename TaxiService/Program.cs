@@ -1,5 +1,4 @@
 using DataLib;
-using static MySql.EntityFrameworkCore.Infrastructure.MySQLDbContextOptionsBuilder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddDbContext<TaxiDbContext>(options =>
-//options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbConnection")));
 builder.Services.AddDbContext<TaxiDbContext>(options =>
-options.UseMySQL("Server=mysql,3306;Database=taxiservicedb;User Id=admin;Password=admin;Integrated Security=false;TrustServerCertificate=true;MultipleActiveResultSets=true"));
+options.UseMySQL("Server=mysql,3306;Database=taxiservicedb;User Id=admin;Password=admin;"));
 
 var app = builder.Build();
 

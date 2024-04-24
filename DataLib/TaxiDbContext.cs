@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql;
 using DataLib.Model;
 
 public class TaxiDbContext : DbContext
@@ -16,6 +17,11 @@ public class TaxiDbContext : DbContext
      {
          optionsBuilder.UseSqlServer("mysql");
      }*/
+
+     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseMySQL("server=localhost;port=3306;database=taxiservicedb;user=admin;password=admin");
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
