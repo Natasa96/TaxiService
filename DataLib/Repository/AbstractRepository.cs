@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class AbstractRepository<T> : IRepository<T> where T : class
 {
-    private readonly DbContext _dbContext;
+    protected readonly DbContext _dbContext;
     public AbstractRepository(DbContext dbContext)
     {
         _dbContext = dbContext;
