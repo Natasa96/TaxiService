@@ -337,3 +337,4 @@ C:/Users/Administrator/Desktop/fax/TaxiServiceProject/TaxiService/bin/Debug/net8
 /Users/nenadradulovic/Desktop/nata/TaxiService/TaxiService/obj/Debug/net8.0/ref/TaxiService.dll
 /Users/nenadradulovic/Desktop/nata/TaxiService/TaxiService/bin/Debug/net8.0/MySqlConnector.dll
 /Users/nenadradulovic/Desktop/nata/TaxiService/TaxiService/bin/Debug/net8.0/Pomelo.EntityFrameworkCore.MySql.dll
+/Users/nenadradulovic/Desktop/nata/TaxiService/TaxiService/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll

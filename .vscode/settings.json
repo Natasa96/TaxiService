@@ -2,5 +2,6 @@
   "dotnet.defaultSolution": "TaxiServiceSolution.sln",
   "omnisharp.enableRoslynAnalyzers": true,
   "omnisharp.enableEditorConfigSupport": true,
-  "csharp.format.enable": true
+  "csharp.format.enable": true,
+  "dotnet.preferCSharpExtension": true
 }

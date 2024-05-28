@@ -1,17 +1,21 @@
+using System;
+using System.Configuration;
+using System.IO;
+using System.Reflection.Metadata.Ecma335;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.IO;
-using System.Text.Json;
+
 
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-  private AuthService _authService;
+  private readonly AuthService _authService;
   public AuthController(AuthService authService)
   {
     _authService = authService;
@@ -21,16 +25,22 @@ public class AuthController : ControllerBase
   public async Task<IActionResult> Register(RegisterRequest request)
   {
     var response = await _authService.Register(request);
+    Console.WriteLine(response.ToString());
     return Ok(response);
   }
 
   [HttpPost("login")]
   public async Task<IActionResult> Login(LoginRequest request)
   {
-    var token = await _authService.Login(request);
-    return Ok(token);
+    try
+    {
+      var token = await _authService.Login(request);
+      return Ok(token);
+    }
+    catch (Exception ex) { return BadRequest(ex.Message); }
   }
 
+  [Authorize(Policy = "AdminOnly")]
   [HttpGet("me")]
   public async Task<IActionResult> Me()
   {
@@ -42,5 +52,32 @@ public class AuthController : ControllerBase
 
     var user = await _authService.GetUser(token);
     return Ok(user);
+  }
+
+  [Authorize(Policy = "AdminOnly")]
+  [HttpPost("verify")]
+  //TODO: Convert int driverID to DTO class
+  public IActionResult VerifyDriver(VerifyRequest request)
+  {
+    try
+    {
+      _authService.VerifyDriver(request.DriverId);
+      return Ok($"Driver is successfully verified!{request.DriverId}");
+    }
+    catch (Exception ex) { return BadRequest(ex.Message); }
+  }
+
+  [Authorize]
+  [HttpPut("update")]
+  public async Task<IActionResult> UpdateProfile(RegisterRequest request)
+  {
+    try
+    {
+      var userId = User.Claims.FirstOrDefault(x => x.Type == "UserId").Value;
+      var responce = await _authService.UpdateUser(request, Convert.ToInt32(userId));
+      return Ok(responce);
+    }
+    catch (Exception ex) { return BadRequest(ex.Message); }
+
   }
 }

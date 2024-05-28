@@ -1,11 +1,15 @@
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using BCrypt.Net;
 using DataLib;
 using DataLib.Model;
-using BCrypt.Net;
-using System;
-//using System.Exception;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using ZstdSharp.Unsafe;
 
 
 public class AuthService
@@ -45,31 +49,64 @@ public class AuthService
   public async Task<string> Login(LoginRequest loginRequest)
   {
     var user = await _repository.FindByUsernameAsync(loginRequest.Username);  //User izvucen iz baze
+
     if (user == null)
       throw new Exception("User does not exists!");
+
+    if (user.Role == Roles.Driver)
+      if (user.VerificationState != VerificationState.Approved)
+        throw new Exception("Driver not verified!");
+
 
     var isPasswordValid = VerifyPassword(loginRequest.Password, user.Password);
 
     if (!isPasswordValid)
       throw new Exception("Password is incorect!");
 
-    var jwtToken = GenerateToken(Convert.ToString(user.Id));
+    var jwtToken = GenerateToken(Convert.ToString(user.Id), user.Role.ToString());
 
     return jwtToken;
   }
 
-  public bool VerifyDriver(int idDriver)
+
+  public async Task<RegisterResponse> UpdateUser(RegisterRequest user, int userId)
   {
-    //TODO <------------
-    return true;
+    //update user logic here
+    var userUpdate = await _repository.GetByIdAsync(userId);
+    userUpdate.Name = user.Name;
+    userUpdate.Surname = user.Surname;
+    userUpdate.Password = HashPassword(user.Password);
+    userUpdate.Birthday = user.Birthday;
+    userUpdate.Picture = user.Picture;
+    userUpdate.Address = new Address()
+    {
+      StreetName = user.Address.StreetName,
+      StreetNumber = user.Address.StreetNumber,
+      City = user.Address.City,
+      ZipCode = user.Address.ZipCode
+    };
+
+    await _repository.UpdateAsync(userUpdate);
+    return new RegisterResponse() { Message = "User is updated successfully" };
+  }
+
+  public async void VerifyDriver(int idDriver)
+  {
+    var driver = await _repository.GetByIdAsync(idDriver);
+    if (driver.VerificationState == VerificationState.Approved)
+      throw new Exception("Driver state is already approved!");
+
+    driver.VerificationState = VerificationState.Approved;
+    await _repository.UpdateAsync(driver);
   }
 
   public async Task<User> GetUser(string token)
   {
     var tokenData = DecryptToken(token);
+    tokenData.TryGetValue("UserId", out var userId);
     Console.WriteLine(tokenData);
 
-    return new User();
+    return await _repository.GetByIdAsync(Convert.ToInt32(userId));
   }
 
   private string HashPassword(string password)
@@ -81,7 +118,7 @@ public class AuthService
     return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
   }
 
-  private string GenerateToken(string userId)
+  private string GenerateToken(string userId, string userRole)
   {
     string secretKey = "wdFjiHj0P+ogzJ3BQb0W9Yd2MBj8DVhO3TkH5qtd3Eo=";
     TimeSpan tokenLifetime = TimeSpan.FromMinutes(30);
@@ -92,9 +129,11 @@ public class AuthService
     {
       Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, userId),
-                new Claim("Role", "Admin")
+                new Claim("UserId", userId),
+                new Claim(ClaimTypes.Role, userRole)
             }),
+      Issuer = "TaxiService",
+      Audience = "TaxiService",
       Expires = DateTime.UtcNow.Add(tokenLifetime),
       SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
@@ -103,7 +142,7 @@ public class AuthService
     return tokenHandler.WriteToken(token);
   }
 
-  private string DecryptToken(string encryptedToken)
+  private Dictionary<string, string> DecryptToken(string encryptedToken)
   {
     var handler = new JwtSecurityTokenHandler();
     var token = handler.ReadToken(encryptedToken) as JwtSecurityToken;
@@ -120,6 +159,8 @@ public class AuthService
 
     var claimsPrincipal = handler.ValidateToken(encryptedToken, tokenValidationParameters, out var validatedToken);
 
-    return token.Claims.ToList();
+    return token.Claims.ToDictionary(c => c.Type, c => c.Value);
   }
+
+
 }

@@ -135,3 +135,7 @@ C:/Users/Administrator/Desktop/fax/TaxiServiceProject/AuthService/obj/Debug/net8
 /Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
 /Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
 /Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
+/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
