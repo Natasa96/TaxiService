@@ -16,13 +16,13 @@ public class RideRepository : AbstractRepository<Ride>, IRideRepository
     return await _dbContext.Set<Ride>().FirstOrDefaultAsync(r => r.Id == id);
   }
 
-  public async Task<Ride> GetDriverRidesAsync(int driverId)
+  public async Task<List<Ride>> GetDriverRidesAsync(int driverId)
   {
-    return await _dbContext.Set<Ride>().FirstOrDefaultAsync(x => x.DriverId == driverId);
+    return await _dbContext.Set<Ride>().Where(x => x.DriverId == driverId).ToListAsync();
   }
 
-  public async Task<Ride> GetUserRidesAsync(int userId)
+  public async Task<List<Ride>> GetUserRidesAsync(int userId)
   {
-    return await _dbContext.Set<Ride>().FirstOrDefaultAsync(x => x.UserId == userId);
+    return await _dbContext.Set<Ride>().Where(x => x.UserId == userId).ToListAsync();
   }
 }

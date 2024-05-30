@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using ZstdSharp.Unsafe;
 
-
+//TODO: Ocenjivanje (UserOnly) i blokiranje (AdminOnly) vozaca
 public class AuthService
 {
   private IUserRepository _repository;
@@ -48,7 +48,7 @@ public class AuthService
 
   public async Task<string> Login(LoginRequest loginRequest)
   {
-    var user = await _repository.FindByUsernameAsync(loginRequest.Username);  //User izvucen iz baze
+    var user = await _repository.FindByUsernameAsync(loginRequest.Username);
 
     if (user == null)
       throw new Exception("User does not exists!");
@@ -71,13 +71,22 @@ public class AuthService
 
   public async Task<RegisterResponse> UpdateUser(RegisterRequest user, int userId)
   {
-    //update user logic here
     var userUpdate = await _repository.GetByIdAsync(userId);
-    userUpdate.Name = user.Name;
-    userUpdate.Surname = user.Surname;
-    userUpdate.Password = HashPassword(user.Password);
+
+    if (user.Name != String.Empty)
+      userUpdate.Name = user.Name;
+
+    if (user.Surname != String.Empty)
+      userUpdate.Surname = user.Surname;
+
+    if (user.Password != string.Empty)
+      userUpdate.Password = HashPassword(user.Password);
+
     userUpdate.Birthday = user.Birthday;
-    userUpdate.Picture = user.Picture;
+
+    if (user.Picture != null || user.Picture != String.Empty)
+      userUpdate.Picture = user.Picture;
+
     userUpdate.Address = new Address()
     {
       StreetName = user.Address.StreetName,
@@ -90,6 +99,7 @@ public class AuthService
     return new RegisterResponse() { Message = "User is updated successfully" };
   }
 
+  //Dodati za funkcionalnost za blokiranje vozaca
   public async void VerifyDriver(int idDriver)
   {
     var driver = await _repository.GetByIdAsync(idDriver);

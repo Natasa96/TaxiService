@@ -13,3 +13,11 @@ public enum VerificationState
     Approved,
     Declined
 }
+
+public enum RideStatus
+{
+    Available,
+    InProgress,
+    Finished,
+    Cancelled
+}

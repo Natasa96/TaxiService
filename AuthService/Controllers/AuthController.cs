@@ -56,7 +56,6 @@ public class AuthController : ControllerBase
 
   [Authorize(Policy = "AdminOnly")]
   [HttpPost("verify")]
-  //TODO: Convert int driverID to DTO class
   public IActionResult VerifyDriver(VerifyRequest request)
   {
     try

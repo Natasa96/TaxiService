@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 
 /**
 TODO:
-Create a route to update profile (PUT /profile) (user can only update his own profile (hint: extract userID from jwt token))
-Create new ride (POST /ride). Check if the ride with user id and driver id exists throw error
-Get rides(GET /ride). Based on JWT token role return following(Admin -> all rides, Driver -> Rides where driver id is null (new ride))
- and rides where driverID matches drivers id (past rides), User -> rides where userID=users id and driverID is not null (past rides))
-
  Start microservices. See what to use for communication between microservices
+ Pomeri dovlacenje korisnika iz TaxiService u AuthService
+
+ Napraviti novi EF model za ocenjivanje vozaca koji ce imati userId, driverId i ocenu
+ Dodati novi status verifikacije za vozace --BLOCKED--
+
+ Popraviti vreme cekanja korisnika (da ne zavisi od vozaca), popraviti vreme trajanja voznje iz minuti ---> trenutni datum + min 
+ i dodati cenu voznje 
 */
 public class TaxiController : ControllerBase
 {
@@ -51,7 +53,6 @@ public class TaxiController : ControllerBase
   {
     try
     {
-      // get rides based on jwt token data
       var userRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;
       Roles role = (Roles)Enum.Parse(typeof(Roles), userRole);
 
@@ -62,33 +63,57 @@ public class TaxiController : ControllerBase
     catch (Exception ex) { return BadRequest(ex.Message); }
   }
 
-
   [Authorize(Policy = "DriverOnly")]
   [HttpPost("accept-ride")]
-  public IActionResult AcceptRide(RideUpdateRequest request)
+  public async Task<IActionResult> AcceptRide(RideUpdateRequest request)
   {
-    //assign driver to the ride
-    return Ok();
+    try
+    {
+      var driverId = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
+      bool valid = await _taxiService.CanDriverAcceptRides(request, Convert.ToInt32(driverId));
+
+      if (valid)
+        await _taxiService.UpdateRide(request, Convert.ToInt32(driverId));
+
+      return Ok();
+    }
+    catch (Exception ex) { return BadRequest(ex.Message); }
+
   }
 
   [Authorize(Policy = "DriverOnly")]
   [HttpPost("start-ride")]
-  public IActionResult StartRide(RideUpdateRequest request)
+  public async Task<IActionResult> StartRide(RideUpdateRequest request)
   {
-    // start ride
-    // returns estimation time when taxi will come to the user
-    // when ride is started user cannot request new rides
-    // driver cannot accept new rides
-    return Ok();
+    try
+    {
+      var driverId = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
+      bool valid = await _taxiService.CanDriverAcceptRides(request, Convert.ToInt32(driverId));
+
+      if (valid)
+        await _taxiService.UpdateRide(request, Convert.ToInt32(driverId));
+
+      return Ok();
+    }
+    catch (Exception ex) { return BadRequest(ex.Message); }
   }
 
   [Authorize(Policy = "DriverOnly")]
   [HttpPost("finish-ride")]
-  public IActionResult FinishRide(RideUpdateRequest request)
+  public async Task<IActionResult> FinishRide(RideUpdateRequest request)
   {
-    // finish ride
-    // after this action the user can request new rides
-    return Ok();
+    try
+    {
+      var driverId = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
+      bool validAccept = await _taxiService.CanDriverAcceptRides(request, Convert.ToInt32(driverId));
+      bool validFinish = await _taxiService.CanDriverFinishRides(request, Convert.ToInt32(driverId));
+
+      if (validAccept && validFinish)
+        await _taxiService.UpdateRide(request, Convert.ToInt32(driverId));
+
+      return Ok();
+    }
+    catch (Exception ex) { return BadRequest(ex.Message); }
   }
 
 }
