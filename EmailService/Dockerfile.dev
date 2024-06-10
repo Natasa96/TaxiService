@@ -1,0 +1,11 @@
+# TaxiService Dockerfile.dev
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["EmailService/EmailService.csproj", "EmailService/"]
+COPY ["DataLib/DataLib.csproj", "DataLib/"]
+RUN dotnet restore "EmailService/EmailService.csproj"
+#RUN dotnet build "DataLib/DataLib.csproj"
+COPY . .
+WORKDIR "/src/EmailService"
+
+ENTRYPOINT ["dotnet", "watch", "run", "--urls", "http://*:80"]

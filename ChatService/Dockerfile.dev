@@ -1,0 +1,11 @@
+# ChatService Dockerfile.dev
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["ChatService/ChatService.csproj", "ChatService/"]
+COPY ["DataLib/DataLib.csproj", "DataLib/"]
+RUN dotnet restore "ChatService/ChatService.csproj"
+#RUN dotnet build "DataLib/DataLib.csproj"
+COPY . .
+WORKDIR "/src/ChatService"
+
+ENTRYPOINT ["dotnet", "watch", "run", "--urls", "http://*:80"]

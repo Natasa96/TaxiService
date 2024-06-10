@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/AuthService.csproj": {}
+    "/src/AuthService/AuthService.csproj": {}
   },
   "projects": {
-    "/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/AuthService.csproj": {
+    "/src/AuthService/AuthService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/AuthService.csproj",
+        "projectUniqueName": "/src/AuthService/AuthService.csproj",
         "projectName": "AuthService",
-        "projectPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/AuthService.csproj",
-        "packagesPath": "/Users/nenadradulovic/.nuget/packages/",
-        "outputPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/AuthService/obj/",
+        "projectPath": "/src/AuthService/AuthService.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/src/AuthService/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/nenadradulovic/.nuget/NuGet/NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj": {
-                "projectPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj"
+              "/src/DataLib/DataLib.csproj": {
+                "projectPath": "/src/DataLib/DataLib.csproj"
               }
             }
           }
@@ -36,6 +36,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -50,9 +55,17 @@
               "target": "Package",
               "version": "[8.0.5, )"
             },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -86,21 +99,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/8.0.3/libexec/sdk/8.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj": {
+    "/src/DataLib/DataLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj",
+        "projectUniqueName": "/src/DataLib/DataLib.csproj",
         "projectName": "DataLib",
-        "projectPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/DataLib.csproj",
-        "packagesPath": "/Users/nenadradulovic/.nuget/packages/",
-        "outputPath": "/Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/obj/",
+        "projectPath": "/src/DataLib/DataLib.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/src/DataLib/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/nenadradulovic/.nuget/NuGet/NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -118,6 +131,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -141,6 +159,10 @@
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
               "version": "[8.0.2, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.8.1, )"
             }
           },
           "imports": [
@@ -159,7 +181,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/8.0.3/libexec/sdk/8.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

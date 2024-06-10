@@ -1,14 +1,21 @@
-# Use the official .NET Core SDK image
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# TaxiService Dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
+EXPOSE 80
 
-# Copy csproj and restore as distinct layers
-COPY TaxiService.csproj .
-RUN dotnet restore
-
-# Copy everything else and build the app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["TaxiService/TaxiService.csproj", "TaxiService/"]
+COPY ["DataLib/DataLib.csproj", "DataLib/"]
+RUN dotnet restore "TaxiService/TaxiService.csproj"
 COPY . .
+WORKDIR "/src/TaxiService"
+RUN dotnet build "TaxiService.csproj" -c Release -o /app/build
 
-EXPOSE 5000
+FROM build AS publish
+RUN dotnet publish "TaxiService.csproj" -c Release -o /app/publish
 
-CMD ["dotnet", "watch", "--force", "run", "--urls", "http://0.0.0.0:5000"]
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "TaxiService.dll"]

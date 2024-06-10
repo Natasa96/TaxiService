@@ -3,5 +3,7 @@
   "omnisharp.enableRoslynAnalyzers": true,
   "omnisharp.enableEditorConfigSupport": true,
   "csharp.format.enable": true,
-  "dotnet.preferCSharpExtension": true
+  "dotnet.preferCSharpExtension": true,
+  "dotnet.server.useOmnisharp": true,
+  "omnisharp.enableMsBuildLoadProjectsOnDemand": true
 }

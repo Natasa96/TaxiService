@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = DataLib
-build_property.ProjectDir = /Users/nenadradulovic/Desktop/nata/TaxiService/DataLib/
+build_property.ProjectDir = /src/DataLib/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

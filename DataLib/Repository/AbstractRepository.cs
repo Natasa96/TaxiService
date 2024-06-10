@@ -7,19 +7,20 @@ public class AbstractRepository<T> : IRepository<T> where T : class
     {
         _dbContext = dbContext;
     }
-    public async Task<T> GetByIdAsync(int id)
+    public virtual async Task<T> GetByIdAsync(int id)
     {
         return await _dbContext.Set<T>().FindAsync(id);
     }
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
         return await _dbContext.Set<T>().ToListAsync();
     }
 
-    public async Task AddAsync(T entity)
+    public virtual async Task<T> AddAsync(T entity)
     {
         await _dbContext.Set<T>().AddAsync(entity);
         await _dbContext.SaveChangesAsync();
+        return entity;
     }
     public async Task UpdateAsync(T entity)
     {

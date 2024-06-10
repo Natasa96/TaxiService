@@ -1,28 +1,42 @@
 version: "3.8"
 
 services:
-  # taxiservice:
-  #   build:
-  #     context: ./TaxiService
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "5000:5000" # Map container port 5000 to host port 5000
-  #   volumes:
-  #     - ./TaxiService:/app
-  #     - ./DataLib:/app/DataLib
-  #   depends_on:
-  #     - mysql
+  authservice:
+    build:
+      context: .
+      dockerfile: AuthService/Dockerfile
+    container_name: "authservice"
+    depends_on:
+      - taxirabbitmq
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - RABBITMQ_HOST=taxirabbitmq
+    ports:
+      - "5001:80"
 
-  # authservice:
-  #   build:
-  #     context: ./AuthService
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "5001:5001" # Map container port 5001 to host port 5001
-  #   volumes:
-  #     - ./AuthService:/app
-  #   depends_on:
-  #     - mysql
+  taxiservice:
+    build:
+      context: .
+      dockerfile: TaxiService/Dockerfile
+    container_name: "taxiservice"
+    depends_on:
+      - taxirabbitmq
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - RABBITMQ_HOST=taxirabbitmq
+    ports:
+      - "5000:80"
+  emailservice:
+    build:
+      context: .
+      dockerfile: EmailService/Dockerfile
+    container_name: "emailservice"
+    depends_on:
+      - taxirabbitmq
+      - authservice
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - RABBITMQ_HOST=taxirabbitmq
 
   mysql:
     image: mysql:latest
@@ -34,4 +48,14 @@ services:
       MYSQL_ROOT_PASSWORD: "root"
     ports:
       - "3306:3306" # Map container port 3306 to host port 3306
+
+  taxirabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: "taxirabbitmq"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
 

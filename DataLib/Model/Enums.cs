@@ -11,13 +11,14 @@ public enum VerificationState
 {
     Processing,
     Approved,
-    Declined
+    Declined,
+    Blocked
 }
 
 public enum RideStatus
 {
-    Available,
-    InProgress,
-    Finished,
-    Cancelled
+    Accepted = 0,
+    InProgress = 1,
+    Finished = 2,
+    Cancelled = 3
 }

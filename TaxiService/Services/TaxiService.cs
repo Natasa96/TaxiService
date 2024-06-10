@@ -1,131 +1,266 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Azure.Core;
 using DataLib;
 using DataLib.Model;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.IdentityModel.Tokens;
 
 public class TaxiService
 {
-  private readonly IRideRepository _rideRepository;
-  private readonly IUserRepository _userRepository;
-  public TaxiService(IRideRepository rideRepository, IUserRepository userRepository)
-  {
-    _rideRepository = rideRepository;
-    _userRepository = userRepository;
-  }
+    private readonly IRideRepository _rideRepository;
+    private readonly IUserRepository _userRepository;
 
-  public async Task<RideResponse> NewRide(RideRequest newRideRequest)
-  {
-
-    await _rideRepository.AddAsync(new Ride()
+    public TaxiService(IRideRepository rideRepository, IUserRepository userRepository)
     {
-      StartTime = newRideRequest.StartTime,
-      EndTime = newRideRequest.EndTime,
-      StartAddress = new Address
-      {
-        StreetName = newRideRequest.StartAddress.StreetName,
-        StreetNumber = newRideRequest.StartAddress.StreetNumber,
-        ZipCode = newRideRequest.StartAddress.ZipCode,
-        City = newRideRequest.StartAddress.City
-      },
-      EndAddress = new Address
-      {
-        StreetName = newRideRequest.EndAddress.StreetName,
-        StreetNumber = newRideRequest.EndAddress.StreetNumber,
-        City = newRideRequest.EndAddress.City,
-        ZipCode = newRideRequest.EndAddress.ZipCode
-      },
-      UserId = newRideRequest.UserId,
-      DriverId = newRideRequest.DriverId
-    });
-
-    return new RideResponse() { Message = "New RIDE created successfully!" };
-  }
-
-  public async Task<IEnumerable<User>> GetAllDrivers()
-  {
-    var drivers = await _userRepository.GetAllAsync();
-
-    return drivers.Where<User>(d => d.Role == Roles.Driver);
-  }
-
-  /* Getting:
-      ADMIN: all past rides
-      DRIVER: all past rides of driver with userId(driverId)
-      USER: all his past rides
-  */
-  public async Task<IEnumerable<Ride>> GetAllRides(Roles role, int userId)
-  {
-    switch (role)
-    {
-      case Roles.Driver:
-        await _rideRepository.GetDriverRidesAsync(userId);
-        break;
-      case Roles.User:
-        await _rideRepository.GetUserRidesAsync(userId);
-        break;
-      default:
-        await _rideRepository.GetAllAsync();
-        break;
+        _rideRepository = rideRepository;
+        _userRepository = userRepository;
     }
-    throw new Exception("List of rides not found!");
-  }
-  public async Task<Ride> UpdateRide(RideUpdateRequest request, int driverId)
-  {
-    var ride = await _rideRepository.FindByIdAsync(request.RideId);
-    Random estimatedTime = new Random();
 
-    switch (request.status)
+    public async Task<RideResponse> GetRideByIdAsync(int id)
     {
-      case RideStatus.Available:
-        ride.AcceptedTime = request.AcceptionTime;
-        ride.DriverId = driverId;
-        break;
-      case RideStatus.InProgress:
-        ride.StartTime = request.StartTime;
-        ride.EstimatedRideTime = (uint)estimatedTime.Next(1, 10);
-        break;
-      case RideStatus.Finished:
-        ride.EndTime = request.FinishedTime;
-        break;
-      default:                            //Canceled ride
-        ride.EndTime = DateTime.Now;
-        break;
+        Ride ride = await _rideRepository.FindByIdAsync(id);
+        return new RideResponse()
+        {
+            Id = ride.Id,
+            Driver = ride?.Driver?.ToString() ?? "",
+            User = ride?.User?.ToString() ?? "",
+            Price = ride?.RidePrice ?? -1,
+            StartAddress = ride?.StartAddress.ToString() ?? "",
+            EndAddress = ride?.EndAddress.ToString() ?? "",
+            EstimatedRideTime = ride?.EstimatedRideTime,
+            EstimatedArrivalTime = ride.EstimatedArrivalTime,
+            RideStatus = ride.Status
+        };
     }
-    await _rideRepository.UpdateAsync(ride);
 
-    throw new NotImplementedException();
-  }
+    public async Task<RideResponse> NewRide(RideRequest newRideRequest, int userId)
+    {
+        Ride returnRide;
+        returnRide = await _rideRepository.AddAsync(new Ride()
+        {
+            StartAddress = new Address
+            {
+                StreetName = newRideRequest.StartAddress.StreetName,
+                StreetNumber = newRideRequest.StartAddress.StreetNumber,
+                ZipCode = newRideRequest.StartAddress.ZipCode,
+                City = newRideRequest.StartAddress.City
+            },
+            EndAddress = new Address
+            {
+                StreetName = newRideRequest.EndAddress.StreetName,
+                StreetNumber = newRideRequest.EndAddress.StreetNumber,
+                City = newRideRequest.EndAddress.City,
+                ZipCode = newRideRequest.EndAddress.ZipCode
+            },
+            UserId = userId,
+            RidePrice = newRideRequest.RidePrice,
+            EstimatedArrivalTime = newRideRequest.EstimatedArrivalTime,
+            Status = 0
+        });
 
-  public async Task<bool> CanDriverAcceptRides(RideUpdateRequest request, int driverId)
-  {
-    var driver = await _userRepository.GetByIdAsync(driverId);
-    if (driver.VerificationState != VerificationState.Approved)
-      throw new Exception("Driver is not verified!");
+        return new RideResponse()
+        {
+            Id = returnRide.Id,
+            Driver = returnRide?.Driver?.ToString() ?? "",
+            User = returnRide?.User?.ToString() ?? "",
+            Price = returnRide?.RidePrice ?? -1,
+            StartAddress = returnRide?.StartAddress.ToString() ?? "",
+            EndAddress = returnRide?.EndAddress.ToString() ?? "",
+            EstimatedRideTime = returnRide?.EstimatedRideTime,
+            EstimatedArrivalTime = returnRide.EstimatedArrivalTime,
+            RideStatus = returnRide.Status
+        };
+    }
 
-    var rides = await _rideRepository.GetDriverRidesAsync(driverId);
-    if (rides.Select(r => r.EndTime == null).Count() > 0)
-      throw new Exception("Driver already has an active ride!");
+    public async Task<IEnumerable<User>> GetAllDrivers()
+    {
+        var drivers = await _userRepository.GetAllAsync();
 
-    return true;
-  }
+        return drivers.Where<User>(d => d.Role == Roles.Driver);
+    }
 
-  public async Task<bool> CanDriverFinishRides(RideUpdateRequest request, int driverId)
-  {
-    var rides = await _rideRepository.GetDriverRidesAsync(driverId);
+    /* Getting:
+        ADMIN: all past rides
+        DRIVER: all past rides of driver with userId(driverId)
+        USER: all his past rides
+    */
+    public async Task<IEnumerable<RideResponse>> GetAllRides(Roles role, int userId)
+    {
+        try
+        {
+            IEnumerable<Ride> data;
 
-    if (rides.Select(r => r.StartTime == null).Count() > 0)
-      throw new Exception("This ride is not started!");
+            switch (role)
+            {
+                case Roles.Driver:
+                    data = await _rideRepository.GetDriverAvailableRidesAsync();
+                    break;
+                case Roles.User:
+                    data = await _rideRepository.GetUserRidesAsync(userId);
+                    break;
+                case Roles.Admin:
+                default:
+                    data = await _rideRepository.GetAllAsync();
+                    break;
+            }
+            var returnRides = new List<RideResponse>() { };
+            foreach (var ride in data)
+            {
+                var newRideResponce = new RideResponse()
+                {
+                    Id = ride.Id,
+                    Price = ride.RidePrice,
+                    Driver = ride?.Driver?.ToString() ?? "",
+                    User = ride?.User?.ToString() ?? "",
+                    StartAddress = ride?.StartAddress.ToString() ?? "",
+                    EndAddress = ride?.EndAddress.ToString() ?? "",
+                    EstimatedRideTime = ride?.EstimatedRideTime,
+                    EstimatedArrivalTime = ride.EstimatedArrivalTime,
+                    RideStatus = ride.Status
+                };
+                returnRides.Add(newRideResponce);
+            }
+            return returnRides;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
 
-    return true;
-  }
+    public async Task<IEnumerable<RideResponse>> GetHistoryRides(Roles role, int userId)
+    {
+        try
+        {
+            IEnumerable<Ride> data;
+
+            switch (role)
+            {
+                case Roles.Driver:
+                    data = await _rideRepository.GetDriverRidesAsync(userId);
+                    break;
+                case Roles.User:
+                    data = await _rideRepository.GetUserRidesAsync(userId);
+                    break;
+                case Roles.Admin:
+                default:
+                    data = await _rideRepository.GetAllAsync();
+                    break;
+            }
+            var returnRides = new List<RideResponse>() { };
+            foreach (var ride in data)
+            {
+                var newRideResponce = new RideResponse()
+                {
+                    Id = ride.Id,
+                    Price = ride.RidePrice,
+                    Driver = ride?.Driver?.ToString() ?? "",
+                    User = ride?.User?.ToString() ?? "",
+                    StartAddress = ride?.StartAddress.ToString() ?? "",
+                    EndAddress = ride?.EndAddress.ToString() ?? "",
+                    EstimatedRideTime = ride?.EstimatedRideTime,
+                    EstimatedArrivalTime = ride.EstimatedArrivalTime,
+                    RideStatus = ride.Status
+                };
+                returnRides.Add(newRideResponce);
+            }
+            return returnRides;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        // throw new Exception("List of rides not found!");
+    }
+    public async Task<Ride> UpdateRide(UpdateRideRequest request, int driverId)
+    {
+        var ride = await _rideRepository.FindByIdAsync((int)request.RideId);
+
+        switch (request.Status)
+        {
+            case RideStatus.Accepted:
+                ride.AcceptedTime = request.AcceptionTime;
+                ride.DriverId = driverId;
+                ride.Status = RideStatus.Accepted;
+                break;
+            case RideStatus.InProgress:
+                ride.StartTime = request.StartTime;
+                ride.EstimatedRideTime = request.RideDuration;
+                ride.Status = RideStatus.InProgress;
+                break;
+            case RideStatus.Finished:
+                ride.EndTime = DateTime.Now;
+                ride.Status = RideStatus.Finished;
+                break;
+            default:
+                break;
+        }
+        await _rideRepository.UpdateAsync(ride);
+        return ride;
+    }
+
+    public async Task<bool> CanDriverAcceptRides(UpdateRideRequest request, int driverId)
+    {
+        var driver = await _userRepository.GetByIdAsync(driverId);
+        var ride = await _rideRepository.FindByIdAsync(request.RideId);
+        if (driver.VerificationState != VerificationState.Approved)
+            throw new Exception("Driver is not verified!");
+
+        var rides = await _rideRepository.GetDriverRidesAsync(driverId);
+        if (ride.Driver == null)
+            return true;
+        else
+            throw new Exception("Driver already has an active ride!");
+
+        return true;
+    }
+
+    public async Task<bool> CanDriverStartRides(UpdateRideRequest request, int driverId)
+    {
+        var driver = await _userRepository.GetByIdAsync(driverId);
+        var ride = await _rideRepository.FindByIdAsync(request.RideId);
+        if (driver.VerificationState != VerificationState.Approved)
+            throw new Exception("Driver is not verified!");
+
+        var rides = await _rideRepository.GetDriverRidesAsync(driverId);
+        if (ride.Driver.Id == driver.Id)
+            return true;
+        else
+            throw new Exception("Driver already has an active ride!");
+
+        return true;
+    }
+
+    public async Task<bool> CanDriverFinishRides(UpdateRideRequest request, int driverId)
+    {
+        var driver = await _userRepository.GetByIdAsync(driverId);
+        var ride = await _rideRepository.FindByIdAsync(request.RideId); ;
+
+        if (driver.VerificationState != VerificationState.Approved)
+            throw new Exception("Driver is not verified!");
+        if (driver.Id == ride.Driver.Id)
+        {
+            if (ride.Status == RideStatus.InProgress)
+            {
+                return true;
+            }
+            else;
+            {
+                throw new Exception("Cannot finish ride");
+            }
+        }
+
+        return true;
+    }
 }

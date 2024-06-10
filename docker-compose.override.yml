@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  authservice:
+    build:
+      context: .
+      dockerfile: AuthService/Dockerfile.dev
+    volumes:
+      - ./AuthService:/src/AuthService
+      - ./DataLib:/src/DataLib
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+
+  taxiservice:
+    build:
+      context: .
+      dockerfile: TaxiService/Dockerfile.dev
+    volumes:
+      - ./TaxiService:/src/TaxiService
+      - ./DataLib:/src/DataLib
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80

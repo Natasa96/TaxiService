@@ -1,0 +1,11 @@
+# TaxiService Dockerfile.dev
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["TaxiService/TaxiService.csproj", "TaxiService/"]
+COPY ["DataLib/DataLib.csproj", "DataLib/"]
+RUN dotnet restore "TaxiService/TaxiService.csproj"
+#RUN dotnet build "DataLib/DataLib.csproj"
+COPY . .
+WORKDIR "/src/TaxiService"
+
+ENTRYPOINT ["dotnet", "watch", "run", "--urls", "http://*:80"]

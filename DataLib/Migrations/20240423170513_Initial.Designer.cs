@@ -116,7 +116,7 @@ namespace DataLib.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("User_name")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
 
